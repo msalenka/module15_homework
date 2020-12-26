@@ -1,0 +1,131 @@
+<!-- Задание 4.
+
+Сверстайте кнопку, по клику на которую будет отправляться запрос к Timezone API. В запросе нужно отправить координаты
+местоположения пользователя, полученные с помощью Geolocation API. В ответ на запрос придёт объект, из которого нужно
+вывести на экран следующую информацию:
+
+временная зона, в которой находится пользователь: параметр timezone;
+местные дата и время: параметр date_time_txt.
+Строка запроса к API выглядит следующим образом:
+
+https://api.ipgeolocation.io/timezone?apiKey=32bcd4a6e4b548968e7afcdb682ac679&lat=latitude&long=longitude.
+
+Вместо latitude и longitude нужно подставить широту и долготу. -->
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG</title>
+    <style>
+        body {
+            background: rgb(207, 205, 194);
+        }
+
+        .btn {
+            padding: 0;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: none;
+            cursor: pointer;
+
+
+            display: flex;
+            margin: 5px 10px;
+            padding: 10px 15px;
+            border-radius: 1px;
+            font-size: 12px;
+            line-height: 15px;
+            text-transform: uppercase;
+            color: white;
+            background: #7987b9;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141, 150, 178, .3);
+            transform: scale(1.05);
+        }
+
+        .btn_text {
+            margin-right: 10px;
+        }
+
+        .result {
+            color: rgb(34, 33, 63);
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="btn">Получить информацию</button>
+
+    <div class="result"></div>
+
+
+
+
+    <script>
+        function pageLoaded() {
+            let button = document.querySelector(".btn");
+            let result = document.querySelector(".result");
+            let latitude = "";
+            let longitude = "";
+
+
+
+            function getInfo() {
+
+                fetch(`https://api.ipgeolocation.io/timezone?apiKey=32bcd4a6e4b548968e7afcdb682ac679&lat=${latitude}&long=${longitude}`)
+                    .then((response) => response.json())
+
+                    .then((data) => {
+                        if (data.length != 0) {
+                            let output = "";
+                            output += `<p>Временная зона, в которой Вы находитесь: ${data.timezone}</p>
+                                        <p>Местные дата и время : ${data.date_time_txt}</p>`
+
+                            result.innerHTML = output;
+
+                        }});
+
+
+                const error = () => {
+                    result.textContent = "Невозможно поллучить информацию о Вашем местоположении."
+                }
+
+                const succes = (position) => {
+                     latitude += position.coords.latitude
+                     longitude += position.coords.longitude
+                };
+
+
+
+                if (!navigator.geolocation) {
+                    result.textContent = "Геолокация не поддерживается Вашим браузером.";
+                } else {
+                    result.textContent = "Определение Вашего местоположения...";
+                    navigator.geolocation.getCurrentPosition(succes, error)
+                }
+
+
+
+            };
+
+
+            button.addEventListener("click", getInfo);
+
+
+        };
+
+        document.addEventListener("DOMContentLoaded", pageLoaded)
+
+    </script>
+
+</body>
+
+</html>
