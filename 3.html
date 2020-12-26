@@ -1,0 +1,132 @@
+<!-- Задание 3.
+
+Сверстайте кнопку, клик на которую будет выводить на экран следующие данные:
+
+Размеры экрана пользователя (ширина и высота).
+Координаты местонахождения пользователя. Если пользователь отказался дать доступ к местоположению или данная функция
+недоступна в бразуере, вывести вместо координат сообщение «Информация о местоположении недоступна». -->
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG</title>
+    <style>
+        body {
+            background: rgb(207, 205, 194);
+        }
+
+        .btn {
+            padding: 0;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: none;
+            cursor: pointer;
+        
+
+            display: flex;
+            margin: 5px 10px;
+            padding: 10px 15px;
+            border-radius: 1px;
+            font-size: 12px;
+            line-height: 15px;
+            text-transform: uppercase;
+            color: white;
+            background: #7987b9;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141, 150, 178, .3);
+            transform: scale(1.05);
+        }
+
+        .btn_text {
+            margin-right: 10px;
+        }
+
+        .result {
+            color:rgb(34, 33, 63);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <button class="btn">Вывести данные</button>
+
+    <div class="result"></div>
+
+
+
+
+    <script>
+        function pageLoaded () {
+            let button = document.querySelector(".btn");
+            let result = document.querySelector(".result");
+
+            let screenWidth = document.documentElement.clientWidth;
+            let screenHeight = document.documentElement.clientHeight;
+            let coords;
+
+
+
+
+
+
+            function getInfo () {
+
+                const output = () => {
+
+                    const output = `<p>Ширина Вашего экрана : ${screenWidth}, высота - ${screenHeight}</p>
+                                    <p>Ваши координаты ${coords}.`
+                    result.innerHTML = output;
+
+                }
+
+
+
+                const error = () => {
+                    coords = "Невозможно поллучить информацию о Вашем местоположении."
+                    output ();
+                }
+
+                const succes = (position) => {
+                    coords = `${position.coords.latitude} и ${position.coords.longitude}`
+                    output ();
+
+                };
+
+
+
+                if(!navigator.geolocation) {
+                    result.textContent = "Геолокация не поддерживается Вашим браузером.";
+                } else {
+                    result.textContent = "Определение Вашего местоположения...";
+                navigator.geolocation.getCurrentPosition (succes, error)
+                }
+                
+
+                result.innerHTML = `<div>Ширина вашего экрана ${screenWidth} px, высота - ${screenHeight} px</div>`
+                
+
+            };
+
+
+            button.addEventListener("click", getInfo);
+
+
+        };
+
+        document.addEventListener("DOMContentLoaded", pageLoaded)
+
+    </script>
+
+</body>
+
+</html>
