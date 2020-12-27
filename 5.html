@@ -1,0 +1,218 @@
+<!-- Задание 5.
+
+Реализовать чат на основе эхо-сервера wss://echo.websocket.org/
+Интерфейс состоит из input, куда вводится текст сообщения, и кнопки «Отправить».
+
+При клике на кнопку «Отправить» сообщение должно появляться в окне переписки.
+
+Эхо-сервер будет отвечать вам тем же сообщением, его также необходимо выводить в чат:
+Добавить в чат механизм отправки гео-локации:
+При клике на кнопку «Гео-локация» необходимо отправить данные серверу и в чат вывести ссылку на
+https://www.openstreetmap.org/ с вашей гео-локацией. Сообщение, которое отправит обратно эхо-сервер, не выводить. -->
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>First CHAT</title>
+    <style>
+        body {
+            background: rgb(255, 255, 255);
+            
+        }
+
+        .btn {
+            padding: 0;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: none;
+            cursor: pointer;
+
+
+            margin: 5px 5px;
+            padding: 10px 10px;
+            border-radius: 1px;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 15px;
+            text-transform: uppercase;
+            color: white;
+            background: #7987b9;
+            transition: 0.3s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+
+        .btn:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141, 150, 178, .3);
+            transform: scale(1.05);
+        }
+        .btn2 {
+            padding: 0;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: none;
+            cursor: pointer;
+
+
+            margin: 5px 5px;
+            padding: 10px 10px;
+            border-radius: 1px;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 15px;
+            text-transform: uppercase;
+            color: white;
+            background: #7987b9;
+            transition: 0.3s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+
+        .btn2:hover {
+            box-shadow: 0px 2px 8px 2px rgba(141, 150, 178, .3);
+            transform: scale(1.05);
+        }
+        
+
+        .btn_text {
+            margin-right: 10px;
+        }
+
+        .input-btn {
+            display: flex;
+            padding-bottom: 15px;
+        }
+
+        .input-text {
+            width: 370px;
+            border-width: 3px;
+            border-color: #7987b9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+
+        .message-wrap {
+            list-style: none;
+            width: 565px;
+            border: 3px solid #7987b9;
+            text-align: right;
+            padding: 10px;
+            background: white;
+            height: 700px;
+            overflow: auto;
+            background: rgb(148, 157, 184);
+        }
+
+        .message-wrap li {
+            padding: 5px;
+            width: 100%;
+            margin: 15px 0;
+            padding: 0;
+            position: relative;
+            height: 30px;
+        }
+
+        .message-wrap li .text-wrapp {
+            position: absolute;
+            border: 3px solid #7987b9;
+            width: 70%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+        }
+
+        .message-wrap li:nth-child(even) .text-wrapp {
+            right: 0;
+            border-color: #7987b9
+        
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="input-btn">
+
+        <input type="text" class="input-text" placeholder="Здесь вводится текст сообщения">
+        <button class="btn">Отправить</button>
+        <button class="btn2">Гео-локация</button>
+
+    </div>
+
+    <div>
+
+        <ul class="message-wrap">
+        </ul>
+
+    </div>
+
+
+
+    <script>
+
+        function pageLoaded() {
+
+            let input = document.querySelector(".input-text");
+            let sendButton = document.querySelector(".btn");
+            let getGeo = document.querySelector(".btn2");
+            let textArea = document.querySelector(".message-wrap");
+            
+            websoket = new WebSocket("wss://echo.websocket.org/")
+
+
+            websoket.onopen = function () {
+                console.log("CONNECTED");
+            };
+            websoket.onmessage = (evt) => {
+                textArea.innerHTML += `<li><div class="text-wrapp">${evt.data}</div></li>`;
+            };
+            websoket.onerror = () => {
+                console.log("ERROR");
+            };
+            websoket.onclose = function () {
+                console.log("DISCONNECTED");
+            };
+
+
+            const error = () => {
+                alert("Невозможно получить информацию о Вашем местоположении.")
+            }
+
+            const succes = (position) => {
+                textArea.innerHTML += `<li><div class="text-wrapp"><a target="_blank" href="https://www.openstreetmap.org/#map=16/${position.coords.latitude}/${position.coords.longitude}">Ваше местопоожение</a></div></li>`
+            };
+
+
+            sendButton.addEventListener("click", () => {
+                if (input.value) {
+                textArea.innerHTML += `<li><div class="text-wrapp">${input.value}</div></li>`;
+                websoket.send(input.value)};
+            });
+
+            getGeo.addEventListener("click", () => {
+
+            if (!navigator.geolocation) {
+                alert ("Геолокация не поддерживается Вашим браузером.")
+            } else {
+                navigator.geolocation.getCurrentPosition(succes, error)};
+            });
+
+
+
+        };
+
+
+    document.addEventListener("DOMContentLoaded", pageLoaded)
+
+    </script>
+
+</body>
+
+</html>
