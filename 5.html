@@ -171,7 +171,7 @@ https://www.openstreetmap.org/ с вашей гео-локацией. Сообщ
                 console.log("CONNECTED");
             };
             websoket.onmessage = (evt) => {
-                textArea.innerHTML += `<li><div class="text-wrapp">${evt.data}</div></li>`;
+                writeOutput(`<li><div class="text-wrapp">${evt.data}</div></li>`);
             };
             websoket.onerror = () => {
                 console.log("ERROR");
@@ -182,24 +182,31 @@ https://www.openstreetmap.org/ с вашей гео-локацией. Сообщ
 
 
             const error = () => {
-                alert("Невозможно получить информацию о Вашем местоположении.")
+                writeOutput("Невозможно получить информацию о Вашем местоположении.")
             }
 
             const succes = (position) => {
-                textArea.innerHTML += `<li><div class="text-wrapp"><a target="_blank" href="https://www.openstreetmap.org/#map=16/${position.coords.latitude}/${position.coords.longitude}">Ваше местопоожение</a></div></li>`
+                let link = `https://www.openstreetmap.org/#map=16/${position.coords.latitude}/${position.coords.longitude}`
+                writeOutput(`<li><div class="text-wrapp"><a target="_blank" href="${link}">Ваше местопоожение</a></div></li>`)
             };
 
 
             sendButton.addEventListener("click", () => {
                 if (input.value) {
-                textArea.innerHTML += `<li><div class="text-wrapp">${input.value}</div></li>`;
+                writeOutput(`<li><div class="text-wrapp">${input.value}</div></li>`);
                 websoket.send(input.value)};
             });
+
+            function writeOutput (message) {
+                textArea.innerHTML += message
+
+            }
+
 
             getGeo.addEventListener("click", () => {
 
             if (!navigator.geolocation) {
-                alert ("Геолокация не поддерживается Вашим браузером.")
+                writeOutput("Геолокация не поддерживается Вашим браузером.")
             } else {
                 navigator.geolocation.getCurrentPosition(succes, error)};
             });
