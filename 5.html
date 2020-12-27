@@ -164,7 +164,7 @@ https://www.openstreetmap.org/ с вашей гео-локацией. Сообщ
             let getGeo = document.querySelector(".btn2");
             let textArea = document.querySelector(".message-wrap");
             
-            websoket = new WebSocket("wss://echo.websocket.org/")
+            websoket = new WebSocket("wss://echo.websocket.org/");
 
 
             websoket.onopen = function () {
@@ -183,7 +183,7 @@ https://www.openstreetmap.org/ с вашей гео-локацией. Сообщ
 
             const error = () => {
                 writeOutput("Невозможно получить информацию о Вашем местоположении.")
-            }
+            };
 
             const succes = (position) => {
                 let link = `https://www.openstreetmap.org/#map=16/${position.coords.latitude}/${position.coords.longitude}`
@@ -200,7 +200,7 @@ https://www.openstreetmap.org/ с вашей гео-локацией. Сообщ
             function writeOutput (message) {
                 textArea.innerHTML += message
 
-            }
+            };
 
 
             getGeo.addEventListener("click", () => {
@@ -210,7 +210,6 @@ https://www.openstreetmap.org/ с вашей гео-локацией. Сообщ
             } else {
                 navigator.geolocation.getCurrentPosition(succes, error)};
             });
-
 
 
         };
